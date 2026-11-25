@@ -55,61 +55,90 @@
   </div>
 
   <script>
-    const llibres = [
-      { id: 1, titol: "1984",                 autor: "George Orwell",          genere: "Distopia",        any: 1949 },
-      { id: 2, titol: "Orgullo y Prejuicio",  autor: "Jane Austen",            genere: "Romance",         any: 1813 },
-      { id: 3, titol: "Cien años de soledad", autor: "Gabriel García Márquez", genere: "Realismo mágico", any: 1967 },
-      { id: 4, titol: "El Gran Gatsby",       autor: "F. Scott Fitzgerald",    genere: "Tragedia",        any: 1925 },
-      { id: 5, titol: "Matar a un ruiseñor",  autor: "Harper Lee",             genere: "Ficción",         any: 1960 }
-    ];
+    // Array con todos los libros de la biblioteca
+const llibres = [
+  { id: 1, titol: "1984", autor: "George Orwell", genere: "Distopia", any: 1949 },
+  { id: 2, titol: "Orgullo y Prejuicio", autor: "Jane Austen", genere: "Romance", any: 1813 },
+  { id: 3, titol: "Cien años de soledad", autor: "Gabriel García Márquez", genere: "Realismo mágico", any: 1967 },
+  { id: 4, titol: "El Gran Gatsby", autor: "F. Scott Fitzgerald", genere: "Tragedia", any: 1925 },
+  { id: 5, titol: "Matar a un ruiseñor", autor: "Harper Lee", genere: "Ficción", any: 1960 }
+];
 
-    const tabla = document.querySelector("#tabla-libros");
-    const selector = document.querySelector("#selector-libro");
-    const listaReservas = document.querySelector("#reservas");
-    const mensaje = document.querySelector("#mensaje");
+// Seleccionamos los elementos HTML que necesitamos
+const tabla = document.querySelector("#tabla-libros");
+const selector = document.querySelector("#selector-libro");
+const listaReservas = document.querySelector("#reservas");
+const mensaje = document.querySelector("#mensaje");
 
-    // 1. Rellenar la tabla y el selector
-    selector.innerHTML = `<option value="">Selecciona un libro</option>`;
 
-    for (const libro of llibres) {
-      tabla.innerHTML += `
-        <tr>
-          <td>${libro.titol}</td>
-          <td>${libro.autor}</td>
-          <td>${libro.genere}</td>
-          <td>${libro.any}</td>
-        </tr>`;
+// 1. RELLENAR LA TABLA Y EL SELECTOR
 
-      selector.innerHTML += `<option value="${libro.id}">${libro.titol}</option>`;
+// Añadimos una primera opción vacía al selector
+selector.innerHTML = `<option value="">Selecciona un libro</option>`;
+
+// Recorremos todos los libros del array
+for (const libro of llibres) {
+
+  // Añadimos una fila a la tabla con los datos del libro
+  tabla.innerHTML += `
+    <tr>
+      <td>${libro.titol}</td>
+      <td>${libro.autor}</td>
+      <td>${libro.genere}</td>
+      <td>${libro.any}</td>
+    </tr>`;
+
+  // Añadimos una opción al selector con el ID y el título
+  selector.innerHTML += `<option value="${libro.id}">${libro.titol}</option>`;
+}
+
+
+// 2. BOTÓN RESERVAR
+
+// Cuando hacemos clic en el botón se ejecuta esta función
+document.querySelector("#btn-reservar").onclick = () => {
+
+  // Comprobamos si no se ha seleccionado ningún libro
+  if (selector.value === "") {
+
+    // Mostramos el mensaje de aviso
+    mensaje.classList.remove("d-none");
+    return; // Detenemos la función
+  }
+
+  // Ocultamos el mensaje de aviso
+  mensaje.classList.add("d-none");
+
+  // Variable donde guardaremos el libro seleccionado
+  let libro;
+
+  // Recorremos el array para buscar el libro
+  for (let i = 0; i < llibres.length; i++) {
+
+    // Comprobamos si el ID coincide con el valor del selector
+    if (llibres[i].id == selector.value) {
+
+      // Guardamos el libro encontrado
+      libro = llibres[i];
     }
+  }
 
-    // 2. Botón Reservar
-    document.querySelector("#btn-reservar").onclick = () => {
-      if (selector.value === "") {
-        mensaje.classList.remove("d-none");
-        return;
-      }
-      mensaje.classList.add("d-none");
+  // Obtenemos la fecha y hora actual
+  const fecha = new Date().toLocaleString("es-ES");
 
-      let libro;
-        for (let i = 0; i < llibres.length; i++) {
-          if (llibres[i].id == selector.value) {
-                libro = llibres[i];
-          }
-      }
+  // Creamos la reserva y la añadimos al principio de la lista
+  listaReservas.innerHTML = `
+    <li class="list-group-item">
+      <span class="reserva-titulo">${libro.titol}</span> por ${libro.autor} - Reservado el: ${fecha}
+    </li>
+  ` + listaReservas.innerHTML;
+};
 
-      
-      const fecha = new Date().toLocaleString("es-ES");
 
-      listaReservas.innerHTML = `
-        <li class="list-group-item">
-          <span class="reserva-titulo">${libro.titol}</span> por ${libro.autor} - Reservado el: ${fecha}
-        </li>
-      ` + listaReservas.innerHTML;
-    };
+// 3. OCULTAR EL AVISO AL SELECCIONAR UN LIBRO
 
-    // Ocultar aviso al elegir un libro
-    selector.onchange = () => mensaje.classList.add("d-none");
+// Cuando cambiamos la selección, ocultamos el mensaje
+selector.onchange = () => mensaje.classList.add("d-none");
   </script>
 </body>
-</html>
+</html> 
